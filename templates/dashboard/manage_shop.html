@@ -1,0 +1,292 @@
+{% extends 'dashboard/index.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block extraCss %}
+<style>
+  .tab-pane{
+    min-height: 80vh;
+  }
+  .form-group input[type="file"]{
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: .875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #54667a;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #e9ecef;
+    appearance: none;
+    border-radius: 2px;
+    box-shadow: unset;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  }
+</style>
+{% endblock extraCss %}
+
+{% block content %}
+<div class="page-content container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-6">
+              <h5 class="card-title mb-0">Manage Shops</h5>
+            </div>
+            <div class="col-6 text-end">
+              <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#create-shop-modal">
+                Create Shop
+              </button>
+            </div>
+          </div>
+          <div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table no-wrap user-table mb-0">
+            <thead class="table-light">
+              <tr>
+                <th
+                  scope="col"
+                  class="border-0 font-weight-medium ps-4"
+                >
+                  #
+                </th>
+                <th scope="col" class="border-0 font-weight-medium">
+                  Name
+                </th>
+                <th scope="col" class="border-0 font-weight-medium">
+                  Owner
+                </th>
+                <th scope="col" class="border-0 font-weight-medium">
+                  Category
+                </th>
+                <th scope="col" class="border-0 font-weight-medium">
+                  Type
+                </th>
+                <th scope="col" class="border-0 font-weight-medium">
+                  Approval Stage
+                </th>
+                <th scope="col" class="border-0 font-weight-medium">
+                  Created on
+                </th>
+                <th scope="col" class="border-0 font-weight-medium">
+                  Manage
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for store in data %}
+              <tr>
+                <td class="ps-4">{{forloop.counter}}</td>
+                <td>
+                  <div class="d-flex align-items-start">
+                    <img
+                      src="{{store.get_logo_url}}"
+                      class="rounded-circle shadow-sm"
+                      width="35"
+                      height="35"
+                      style="object-fit: cover;"
+                    />
+                    <div class="ms-2">
+                      <h5 class="font-weight-medium mb-0">
+                        {{store.name}}
+                      </h5>
+                      <span class="text-muted"
+                        >{{store.city.name}}, {{store.city.province.name}}, {{store.city.country.name}}</span
+                      >
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span>{{store.owner.username|title}}</span><br />
+                  <span>{{store.owner.email}}</span>
+                </td>
+                <td>
+                  <span>{{store.get_category_display}}</span><br />
+                  {% comment %} <span>999 - 444 - 555</span> {% endcomment %}
+                </td>
+                <td>
+                  <span>{{store.get_type_display}}</span><br />
+                  {% comment %} <span>999 - 444 - 555</span> {% endcomment %}
+                </td>
+                <td>
+                  <span>{{store.get_approval_stage_display}}</span><br />
+                </td>
+                <td>
+                  <span>{{store.created_at.date}}</span><br />
+                  <span>{{store.created_at.time}}</span>
+                </td>
+                <td>
+                  <a href="{{store.get_edit_url}}" class="text-info edit">
+                    <i class="far fa-edit feather-sm fill-white"></i>
+                  </a>
+                  <button
+                    class="btn text-dark delete ms-2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#delete-confirm-modal"
+                  >
+                    <i data-feather="trash-2" class="feather-sm fill-white"></i>
+                  </button>
+                  <div class="modal fade" id="delete-confirm-modal" tabindex="-1" aria-labelledby="vertical-center-modal" aria-hidden="true">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content modal-filled bg-light-danger">
+                            <div class="modal-body p-4">
+                                <div class="text-center text-danger">
+                                    <i data-feather="x-octagon" class="fill-white feather-lg"></i>
+                                    <h4 class="mt-2">Are you sure?</h4>
+                                    <p class="mt-3 text-center" style="white-space: normal;">
+                                      You are going to delete shop <em>"{{store.name}}"<em>
+                                    </p>
+                                    <form action="." method="POST">
+                                      {% csrf_token %}
+                                      <input type="hidden" name="shop_id" value="{{store.id}}">
+                                      <input type="hidden" name="action" value="delete">
+                                      <button type="submit" class="btn btn-light my-2" data-shop-id="{{store.id}}">Yes</button>
+                                      <button type="button" class="btn btn-light my-2" data-bs-dismiss="modal">No</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="create-shop-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+      <form action="." method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="create">
+        <div class="modal-content">
+            <div class="modal-header text-light bg-dark">
+                <h4 class="modal-title" id="fullWidthModalLabel">Create New Shop Form</h4>
+                <button type="button" class="btn-close filter-invert" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="row justify-content-evenly">
+                <div class="col-lg-10">
+                  <h3 class="mb-4">Create Shop Form</h3>
+                  {{create_shop_form|crispy}}
+                  <div class='text-end mt-4'>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                  </div>
+                </div>
+              </div>
+              {% comment %} <ul class="nav nav-tabs nav-justified nav-bordered mb-3">
+                <li class="nav-item">
+                    <a href="#step-1" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
+                    <span class="d-none d-lg-block">Step 1</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#step-2" data-bs-toggle="tab" aria-expanded="true"
+                        class="nav-link">
+                    <span class="d-none d-lg-block">Step 2</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#step-3" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                    <span class="d-none d-lg-block">Step 3</span>
+                    </a>
+                </li>
+              </ul>
+              <div class="tab-content">
+                <div class="tab-pane show active" id="step-1">
+                  <div class="row justify-content-center">
+                    <div class="col-lg-10 h-100" style="overflow-y: auto;">
+                      {{create_shop_form|crispy}}
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane" id="step-2">
+                  <div class="row justify-content-center">
+                    <div class="col-lg-10 h-100" style="overflow-y: auto;">
+                      <section id="banner-input-cont">
+                        <div class="form-group my-2">
+                          <label for="shop-banner-1">Shop Banner #1</label>
+                          <input type="file" id="shop-banner-1" name="shop-banner" formControlName="shop-banner" class="form-control" data-index="0">
+                        </div>
+                      </section>
+                      <button class="btn btn-sm btn-primary w-100 my-4" id="add-more-banner" type="button">
+                        Add More
+                      </button>
+                      <hr>
+                      <section id="appointment-location-cont">
+                        <div class="form-group my-2">
+                          <label for="appointment-location-1">Appointment location #1</label>
+                          <input type="text" id="appointment-location-1" name="appointment-location" formControlName="appointment-location" class="form-control" data-index="0" placeholder="Location Here">
+                        </div>
+                      </section>
+                      <button class="btn btn-sm btn-primary w-100 my-4" id="add-more-appointment-location" type="button">
+                        Add More
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane" id="step-3">
+                  <div class="row justify-content-center">
+                    <div class="col-lg-10 h-100" style="overflow-y: auto;">
+                      {{legal_documents_form|crispy}}
+                    </div>
+                  </div>
+                  <div class='text-end mt-4'>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                  </div>
+                </div>
+              </div> {% endcomment %}
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+      </form>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extraJs %}
+<script>
+
+
+  const addBannerBtn = document.getElementById("add-more-banner");
+  const bannerInputCont = document.getElementById("banner-input-cont");
+
+  addBannerBtn.addEventListener("click", () => {
+    const inputs = document.querySelectorAll("input[name='shop-banner']");
+    bannerInputCont.innerHTML += `
+    <div class="form-group">
+      <label for="shop-banner-${inputs.length+1}">Shop Banner #${inputs.length+1}</label>
+      <input type="file" id="shop-banner-${inputs.length+1}" name="shop-banner" formControlName="shop-banner" class="form-control" data-index="${inputs.length}">
+    </div>`;
+  })
+
+  const addAppointmentLocationBtn = document.getElementById("add-more-appointment-location");
+  const AppointmentLocationInputCont = document.getElementById("appointment-location-cont");
+
+  addAppointmentLocationBtn.addEventListener("click", () => {
+    const inputs = document.querySelectorAll("input[name='appointment-location']");
+    AppointmentLocationInputCont.innerHTML += `
+    <div class="form-group">
+      <label for="appointment-location-${inputs.length+1}">Appointment location #${inputs.length+1}</label>
+      <input type="text" id="appointment-location-${inputs.length+1}" name="appointment-location" formControlName="appointment-location" class="form-control" data-index="${inputs.length}" placeholder="Location Here">
+    </div>`;
+  })
+
+</script>
+
+{% endblock extraJs %}

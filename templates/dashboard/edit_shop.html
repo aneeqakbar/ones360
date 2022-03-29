@@ -1,0 +1,162 @@
+{% extends 'dashboard/index.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block extraCss %}
+<style>
+    .form-group input[type="file"]{
+      display: block;
+      width: 100%;
+      padding: 0.375rem 0.75rem;
+      font-size: .875rem;
+      font-weight: 400;
+      line-height: 1.5;
+      color: #54667a;
+      background-color: #fff;
+      background-clip: padding-box;
+      border: 1px solid #e9ecef;
+      appearance: none;
+      border-radius: 2px;
+      box-shadow: unset;
+      transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+</style>
+{% endblock extraCss %}
+
+{% block content %}
+<div class="page-content container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="mb-4">Editing Shop '{{shop_instance.name}}'</h3>
+            <div class="card">
+                <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <ul class="nav nav-tabs nav-justified nav-bordered mb-3">
+                            <li class="nav-item">
+                                <a href="#step-1" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
+                                <span class="d-none d-lg-block">General Info</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#step-2" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+                                <span class="d-none d-lg-block">Banners & Appointment Locations </span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#step-3" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                                <span class="d-none d-lg-block">Legal Documents</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane show active" id="step-1">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-10 h-100" style="overflow-y: auto;">
+                                        <form action="{{shop_instance.get_edit_url}}" method="POST" enctype="multipart/form-data" class="form">
+                                            {% csrf_token %}
+                                            {{form|crispy}}
+                                            <div class='text-end mt-4'>
+                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="step-2">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-10 h-100" style="overflow-y: auto;">
+                                        <form action="{{shop_instance.get_banner_url}}" method="POST" enctype="multipart/form-data" class="form">
+                                            {% csrf_token %}
+                                            <article>
+                                                <div class="row p-4 border" style="border-radius: 20px;">
+                                                    {% for banner in shop_instance.banners.all %}
+                                                    <div class="col-4 text-center">
+                                                        <img src="{{banner.image.url}}" alt="" class="rounded shadow" height="150px" width="200px" style="object-fit: cover;">
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                                <section id="banner-input-cont">
+                                                    <div class="form-group my-2">
+                                                        <label for="shop-banner-1">Shop Banner #1</label>
+                                                        <input type="file" id="shop-banner-1" name="shop-banner" formControlName="shop-banner" class="form-control" data-index="0">
+                                                    </div>
+                                                </section>
+                                                <button class="btn btn-sm btn-primary w-100 my-4" id="add-more-banner" type="button">
+                                                    Add More
+                                                </button>
+                                            </article>
+                                            <hr>
+                                            <article>
+                                                <section id="appointment-location-cont">
+                                                    <div class="form-group my-2">
+                                                        <label for="appointment-location-1">Appointment location #1</label>
+                                                        <input type="text" id="appointment-location-1" name="appointment-location" formControlName="appointment-location" class="form-control" data-index="0" placeholder="Location Here">
+                                                    </div>
+                                                </section>
+                                                <button class="btn btn-sm btn-primary w-100 my-4" id="add-more-appointment-location" type="button">
+                                                    Add More
+                                                </button>
+                                            </article>
+                                            <div class='text-end mt-4'>
+                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="step-3">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-10 h-100" style="overflow-y: auto;">
+                                    {{legal_documents_form|crispy}}
+                                    </div>
+                                </div>
+                                <div class='text-end mt-4'>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+
+{% block extraJs %}
+<script>
+
+
+  const addBannerBtn = document.getElementById("add-more-banner");
+  const bannerInputCont = document.getElementById("banner-input-cont");
+
+  addBannerBtn.addEventListener("click", () => {
+    const inputs = document.querySelectorAll("input[name='shop-banner']");
+    bannerInputCont.innerHTML += `
+    <div class="form-group">
+      <label for="shop-banner-${inputs.length+1}">Shop Banner #${inputs.length+1}</label>
+      <input type="file" id="shop-banner-${inputs.length+1}" name="shop-banner" formControlName="shop-banner" class="form-control" data-index="${inputs.length}">
+    </div>`;
+  })
+
+  const addAppointmentLocationBtn = document.getElementById("add-more-appointment-location");
+  const AppointmentLocationInputCont = document.getElementById("appointment-location-cont");
+
+  addAppointmentLocationBtn.addEventListener("click", () => {
+    const inputs = document.querySelectorAll("input[name='appointment-location']");
+    AppointmentLocationInputCont.innerHTML += `
+    <div class="form-group">
+      <label for="appointment-location-${inputs.length+1}">Appointment location #${inputs.length+1}</label>
+      <input type="text" id="appointment-location-${inputs.length+1}" name="appointment-location" formControlName="appointment-location" class="form-control" data-index="${inputs.length}" placeholder="Location Here">
+    </div>`;
+  })
+
+</script>
+
+{% endblock extraJs %}

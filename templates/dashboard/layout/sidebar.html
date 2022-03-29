@@ -1,0 +1,164 @@
+{% load static %}
+<aside class="left-sidebar">
+    <!-- Sidebar scroll-->
+    <div class="scroll-sidebar">
+      <!-- Sidebar navigation-->
+      <nav class="sidebar-nav">
+        <ul id="sidebarnav">
+          <li class="sidebar-item">
+            <a
+              class="
+                sidebar-link
+                has-arrow
+                waves-effect waves-dark
+                profile-dd
+              "
+              href="javascript:void(0)"
+              aria-expanded="false"
+            >
+              <img
+                src="{{request.user.get_image_url}}"
+                class="rounded-circle ms-2"
+                width="30"
+              />
+              <span class="hide-menu">{{request.user.username|title}} </span>
+            </a>
+            <ul aria-expanded="false" class="collapse first-level">
+              <li class="sidebar-item">
+                <a href="{% url 'authentication:ProfileView' %}" class="sidebar-link">
+                  <i class="ti-user"></i>
+                  <span class="hide-menu"> My Profile </span>
+                </a>
+              </li>
+              {% comment %} <li class="sidebar-item">
+                <a href="javascript:void(0)" class="sidebar-link">
+                  <i class="ti-wallet"></i>
+                  <span class="hide-menu"> My Balance </span>
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a href="javascript:void(0)" class="sidebar-link">
+                  <i class="ti-email"></i>
+                  <span class="hide-menu"> Inbox </span>
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a href="javascript:void(0)" class="sidebar-link">
+                  <i class="ti-settings"></i>
+                  <span class="hide-menu"> Account Setting </span>
+                </a>
+              </li> {% endcomment %}
+              <li class="sidebar-item">
+                <a href="{% url 'authentication:logout' %}" class="sidebar-link">
+                  <i class="fas fa-power-off"></i>
+                  <span class="hide-menu"> Logout </span>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="sidebar-item">
+            <a
+              class="
+                sidebar-link
+                has-arrow
+                waves-effect waves-dark
+                profile-dd
+              "
+              href="javascript:void(0)"
+              aria-expanded="false"
+            >
+              <span class="hide-menu">Manage Shops </span>
+            </a>
+            <ul aria-expanded="false" class="collapse first-level">
+              <li class="sidebar-item">
+                <a href="{% url 'shops:ManageShopView' %}" class="sidebar-link">
+                  <i class="ti-user"></i>
+                  <span class="hide-menu"> Tailor Shops </span>
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a href="{% url 'clothshop:ManageShopView' %}" class="sidebar-link">
+                  <i class="ti-user"></i>
+                  <span class="hide-menu"> Cloth Shops </span>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="sidebar-item">
+            <a
+              class="
+                sidebar-link
+                has-arrow
+                waves-effect waves-dark
+                profile-dd
+              "
+              href="javascript:void(0)"
+              aria-expanded="false"
+            >
+              <span class="hide-menu">Manage Users </span>
+            </a>
+            <ul aria-expanded="false" class="collapse first-level">
+              <li class="sidebar-item">
+                <a class="
+                  sidebar-link
+                  has-arrow
+                "
+                href="javascript:void(0)"
+                aria-expanded="false"
+                >
+                  <i class="fas fa-user"></i>
+                  <span class="hide-menu"> Manage Shop Owners </span>
+                </a>
+                <ul aria-expanded="false" class="collapse first-level ms-3">
+                  <li class="sidebar-item">
+                    <a href="{% url 'authentication:ManageShopOwnerView' %}" class="sidebar-link">
+                      <i class="ti-user"></i>
+                      <span class="hide-menu"> All Shop Owners </span>
+                    </a>
+                  </li>
+                  <li class="sidebar-item">
+                    <a href="{% url 'authentication:ManageShopOwnerView' %}?type=TS" class="sidebar-link">
+                      <i class="ti-user"></i>
+                      <span class="hide-menu"> Tailor Shop Owners </span>
+                    </a>
+                  </li>
+                  <li class="sidebar-item">
+                    <a href="{% url 'authentication:ManageShopOwnerView' %}?type=CS" class="sidebar-link">
+                      <i class="ti-user"></i>
+                      <span class="hide-menu"> Cloth Shop Owners </span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              {% comment %} <li class="sidebar-item">
+                <a href="{% url 'authentication:ManageClothOwnerView' %}" class="sidebar-link">
+                  <i class="ti-user"></i>
+                  <span class="hide-menu"> Manage Cloth Shop Owners </span>
+                </a>
+              </li> {% endcomment %}
+              <li class="sidebar-item">
+                <a href="{% url 'authentication:ManageCustomerView' %}" class="sidebar-link">
+                  <i class="ti-user"></i>
+                  <span class="hide-menu"> Manage Customers </span>
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a href="{% url 'authentication:ManageEmployeeView' %}" class="sidebar-link">
+                  <i class="ti-user"></i>
+                  <span class="hide-menu"> Manage Employees </span>
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a href="{% url 'authentication:ManageStaffView' %}" class="sidebar-link">
+                  <i class="ti-user"></i>
+                  <span class="hide-menu"> Manage Staff </span>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <!-- End Sidebar navigation -->
+    </div>
+    <!-- End Sidebar scroll-->
+  </aside>
