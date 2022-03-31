@@ -8,12 +8,14 @@ from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.contrib.sites.shortcuts import get_current_site
+
+from shops.forms import CreateShopForm
 from .tokens import account_activation_token
 from django.core.mail import send_mail
 
 from authentication.mixins import RedirectToPanelMixin
 from authentication.models import Role
-from .forms import MobileAuthenticationForm, TailorRegisterForm, UserRegisterForm, UserUpdateForm
+from .forms import InitialShopForm, MobileAuthenticationForm, TailorRegisterForm, UserRegisterForm, UserUpdateForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Q
@@ -264,18 +266,25 @@ class TailorLoginView(View):
 class TailorRegisterView(View):
     def get(self, request):
         form = TailorRegisterForm()
+        shop_form = InitialShopForm()
         context = {
             'heading': "Sign Up As Tailor",
             'form': form,
+            'shop_form': shop_form,
         }
-        return render(request, 'dashboard/register_form.html', context)
+        return render(request, 'dashboard/tailor_register_form.html', context)
 
     def post(self, request):
         form = TailorRegisterForm(request.POST, request.FILES)
-        if form.is_valid():
+        shop_form = InitialShopForm(request.POST, request.FILES)
+        if form.is_valid() and shop_form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
             user.save()
+            shop = shop_form.save(commit=False)
+            shop.owner = user
+            shop.save()
+
             token = account_activation_token.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             activation_url = reverse("authentication:UserActivateView", kwargs={'token': token, 'uid': uid})
@@ -295,8 +304,9 @@ class TailorRegisterView(View):
         context = {
             'heading': "Sign Up As Tailor",
             'form': form,
+            'shop_form': shop_form,
         }
-        return render(request, 'dashboard/register_form.html', context)
+        return render(request, 'dashboard/tailor_register_form.html', context)
 
 
 class UserActivateView(View):

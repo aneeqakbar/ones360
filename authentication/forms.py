@@ -6,6 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import gettext_lazy as _
 
 from authentication.models import Country, Role
+from shops.models import TailorShop
 
 User = get_user_model()
 
@@ -182,3 +183,14 @@ class TailorRegisterForm(UserCreationForm):
             user.save()
         return user
 
+
+class InitialShopForm(forms.ModelForm):
+    class Meta:
+        model = TailorShop
+        fields = [
+            "name",
+            "category",
+            "services",
+            "interested",
+            "address",
+        ]
