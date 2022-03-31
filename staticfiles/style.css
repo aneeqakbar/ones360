@@ -1,0 +1,18 @@
+.list-no-style {
+    list-style: none !important;
+}
+
+.filter-invert {
+    filter: invert(1) !important;
+}
+
+#loginform input {
+    margin-bottom: 10px !important;
+    height: auto !important;
+}
+
+.form input,
+.form textarea,
+.form select {
+    margin-bottom: 10px !important;
+}

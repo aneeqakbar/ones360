@@ -103,27 +103,27 @@ AUTH_USER_MODEL = "authentication.User"
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'OPTIONS': {
-            'service': 'ones',
-            'passfile': '.my_pgpass',
-        },
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'django-db',
-#         'USER': 'dbfor1s360',
-#         'PASSWORD': 'Y*lp-xg5~b}b',
-#         'HOST': 'localhost',
-#         'trusted_connection': 'yes',
-#         'PORT': '3306',
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'OPTIONS': {
+#             'service': 'ones',
+#             'passfile': '.my_pgpass',
+#         },
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'django-db',
+        'USER': 'dbfor1s360',
+        'PASSWORD': 'Fiverr.123',
+        'HOST': 'localhost',
+       'trusted_connection': 'yes',
+        'PORT': '3306',
+    }
+}
 
 LOGIN_REDIRECT_URL = 'authentication:HomeView'
 LOGIN_URL = 'authentication:LoginView'
@@ -172,7 +172,7 @@ LOCALE_PATHS = [
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
